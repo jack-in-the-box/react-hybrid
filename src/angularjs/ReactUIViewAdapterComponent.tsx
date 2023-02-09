@@ -6,12 +6,13 @@ import { PortalView } from '../react/PortalView';
 import { ReactUIView } from '../react/ReactUIView';
 import { hybridModule } from './module';
 import { debugLog } from '../debug';
+import { createRoot } from 'react-dom/client';
 
 // When an angularjs `ui-view` is instantiated, also create an react-ui-view-adapter (which creates a react UIView)
-hybridModule.directive('uiView', function() {
+hybridModule.directive('uiView', function () {
   return {
     restrict: 'AE',
-    compile: function(tElem, tAttrs) {
+    compile: function (tElem, tAttrs) {
       let { name, uiView } = tAttrs;
       name = name || uiView || '$default';
       debugLog('angularjs', 'ui-view', '?', '.compile()', 'Creating react-ui-view-adapter', tElem);
@@ -25,10 +26,10 @@ var id = 0;
 // This angularjs adapter (inside an angularjs ui-view) creates the react UIView and provides it the correct context
 // It also allows angularjs children created inside the react view (via angular2react or whatever) to access the correct
 // context from the react UIView
-hybridModule.directive('reactUiViewAdapter', function() {
+hybridModule.directive('reactUiViewAdapter', function () {
   return {
     restrict: 'E',
-    link: function(scope: IPortalScope, elem, attrs) {
+    link: function (scope: IPortalScope, elem, attrs) {
       const debug = (method: string, message: string, ...args) =>
         debugLog('angularjs', 'react-ui-view-adapter', `${$id}/${attrs.name}`, method, message, ...args);
 
@@ -100,7 +101,9 @@ hybridModule.directive('reactUiViewAdapter', function() {
           portalView.createPortalToChildUIView($id, { childUIViewProps, portalTarget: el });
         } else {
           debug('.renderReactUIView()', `ReactDOM.render(<ReactUIView name="${childUIViewProps['name']}"/>)`, el);
-          ReactDOM.render<any>(<ReactUIView {...childUIViewProps} />, el as any);
+          const root = createRoot(el); // createRoot(container!) if you use TypeScript
+          root.render(<ReactUIView {...childUIViewProps} />);
+          // ReactDOM.render<any>(<ReactUIView {...childUIViewProps} />, el as any);
         }
       }
 
