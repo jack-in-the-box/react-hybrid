@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { filter } from '@uirouter/core';
 import { IPortalScope } from '../react/AngularUIView';
 import { PortalView } from '../react/PortalView';
@@ -34,6 +33,7 @@ hybridModule.directive('reactUiViewAdapter', function () {
         debugLog('angularjs', 'react-ui-view-adapter', `${$id}/${attrs.name}`, method, message, ...args);
 
       const el = elem[0];
+      const reactRoot = createRoot(el); // createRoot(container!) if you use TypeScript
       let _ref = null;
       let destroyed = false;
       const $id = id++;
@@ -101,9 +101,8 @@ hybridModule.directive('reactUiViewAdapter', function () {
           portalView.createPortalToChildUIView($id, { childUIViewProps, portalTarget: el });
         } else {
           debug('.renderReactUIView()', `ReactDOM.render(<ReactUIView name="${childUIViewProps['name']}"/>)`, el);
-          const root = createRoot(el); // createRoot(container!) if you use TypeScript
-          root.render(<ReactUIView {...childUIViewProps} />);
-          // ReactDOM.render<any>(<ReactUIView {...childUIViewProps} />, el as any);
+
+          reactRoot.render(<ReactUIView {...childUIViewProps} />);
         }
       }
 
@@ -113,8 +112,8 @@ hybridModule.directive('reactUiViewAdapter', function () {
         if (portalView) {
           portalView.removePortalToChildUIView($id);
         } else {
-          const unmounted = ReactDOM.unmountComponentAtNode(el);
-          debug('.$on("$destroy")', `unmountComponentAtNode(): ${unmounted}`, el);
+          reactRoot.unmount();
+          debug('.$on("$destroy")', `reactRoot.unmount()`, el);
         }
         // Remove using jQLite element for cross-browser compatibility.
         elem.remove();

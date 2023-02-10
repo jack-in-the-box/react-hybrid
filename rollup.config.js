@@ -44,6 +44,7 @@ function isExternal(id) {
     '@uirouter/react',
     'react',
     'react-dom',
+    'react-dom/client',
     'prop-types',
     'angular',
   ];
