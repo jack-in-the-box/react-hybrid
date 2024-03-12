@@ -1,6 +1,9 @@
 {
-  "name": "@jitb/react-hybrid",
+  "name": "@jack-in-the-box/react-hybrid",
   "version": "1.0.9",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "clean": "shx rm -rf lib lib-esm _bundles",
     "compile": "npm run clean && tsc && tsc --module es6 --outDir lib-esm",
@@ -47,6 +50,6 @@
   "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ui-router/react-hybrid.git"
+    "url": "https://github.com/jack-in-the-box/react-hybrid.git"
   }
 }
